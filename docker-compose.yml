@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13
+    container_name: sakila-postgres
+    environment:
+      POSTGRES_DB: sakila
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+
+  redis:
+    image: redis:7
+    container_name: sakila-redis
+    ports:
+      - "6379:6379"
+
+  mongodb:
+    image: mongo:5
+    container_name: sakila-mongo
+    ports:
+      - "27017:27017"
