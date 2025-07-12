@@ -103,14 +103,14 @@ This project demonstrates how to migrate data from a PostgreSQL relational datab
 
 ## Project Structure and Files
 
-| Filename             | Description                                                                       | Main Functions / Purpose                                                                                                         |
-| -------------------- | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `migrate-redis.js`   | Migration script from PostgreSQL `country` table to Redis key-value store         | `migrateCountries()` - fetch countries and save in Redis keys                                                                    |
-| `migrate-mongo.js`   | Migration script for MongoDB collections: `language`, `category`, `actor`, `film` | Functions like `migrateLanguages()`, `migrateFilms()` etc., migrate relational data to MongoDB documents with relations embedded |
-| `redis-checking.js`  | Script to connect to Redis and verify data migration                              | `checkRedis()` - read a sample country key to verify migration                                                                   |
-| `mongo-checking.js`  | Script to connect to MongoDB and verify collections document counts               | `checkMongoData()` - count documents in all migrated collections                                                                 |
-| `.env`               | Environment variables configuration                                               | Stores connection info for Postgres, Redis, MongoDB                                                                              |
-| `docker-compose.yml` | Docker Compose file to spin up Postgres, Redis, MongoDB                           | Sets up necessary containers with ports and volumes                                                                              |
+| Filename             | Description                                                                           | Main Functions / Purpose                                                                                                         |
+| -------------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `migrate-redis.js`   | Migration script from PostgreSQL `country` and `city` tables to Redis key-value store | `migrateCountries()` and `migrateCities()` - fetch countries and cities, store in Redis keys                                     |
+| `migrate-mongo.js`   | Migration script for MongoDB collections: `language`, `category`, `actor`, `film`     | Functions like `migrateLanguages()`, `migrateFilms()` etc., migrate relational data to MongoDB documents with relations embedded |
+| `redis-checking.js`  | Script to connect to Redis and verify data migration                                  | `checkRedis()` - read a sample country/city key to verify migration                                                              |
+| `mongo-checking.js`  | Script to connect to MongoDB and verify collections document counts                   | `checkMongoData()` - count documents in all migrated collections                                                                 |
+| `.env`               | Environment variables configuration                                                   | Stores connection info for Postgres, Redis, MongoDB                                                                              |
+| `docker-compose.yml` | Docker Compose file to spin up Postgres, Redis, MongoDB                               | Sets up necessary containers with ports and volumes                                                                              |
 
 ---
 
@@ -122,7 +122,12 @@ This project demonstrates how to migrate data from a PostgreSQL relational datab
 node migrate-redis.js
 ```
 
-* Connects to PostgreSQL, fetches all countries, and stores each country in Redis with keys like `country:1`, `country:2`, etc.
+* Connects to PostgreSQL
+* Migrates all countries and cities to Redis
+* Redis keys are stored as:
+
+  * `country:1` → "Afghanistan"
+  * `city:1` → "A Corua (La Corua)"
 
 ### 2. Run MongoDB Migration
 
@@ -143,7 +148,7 @@ node migrate-mongo.js
 node redis-checking.js
 ```
 
-* Connects to Redis and retrieves a sample key value (`country:2`) to verify data was stored.
+* Connects to Redis and retrieves a sample country or city key value to verify data was stored.
 
 ### MongoDB Check
 
@@ -161,5 +166,3 @@ node mongo-checking.js
 * You can reset the MongoDB collections or Redis keys before rerunning migration to avoid duplicate data.
 * Use Docker logs and `docker exec` to troubleshoot container issues.
 * Ensure you have run `npm install` to install all dependencies (`pg`, `redis`, `mongodb`, `dotenv`).
-
-
